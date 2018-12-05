@@ -1,14 +1,17 @@
 package com.hzdy.zsy.hangzhoutourguide.model;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class ManageDB extends Thread{
     public static Connection connection = null;
     private String driver = "com.mysql.jdbc.Driver";
-    private String url = "jdbc:mysql://172.20.17.88:3306/tour";
+    private String url = "jdbc:mysql://172.20.10.2:3306/tour";
     private String user = "root";
     private String password = "000000";
 
@@ -81,17 +84,68 @@ public class ManageDB extends Thread{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    public static void insert(){
+    public static void insert(String tableName, ArrayList<SqlMap> insertMap){
+        int size=insertMap.size();
+        String column="(";
+        String values="(";
+        String SQL_INSERT="insert into ";
+        Statement st=null;
         try {
-            Statement st = connection.createStatement();
-            String SQL_INSERT="insert into";
+            st = connection.createStatement();
+            for(int i=0;i<size;i++){
+                SqlMap key=insertMap.get(i);column+=key.getKey();
+                if(!(key.equals("age")||key.equals("user_id")||key.equals("belong_ss")||key.equals("release_time")||key.equals("position"))){
+                    values+="'"+key.getValues();
+                }else {
+                    values += key.getValues();
+                }
+                if(i<size-1){
+                    column+=",";values+=",";
+                }else{
+                    column+=") values";values+=");";
+                }
+            }
+            SQL_INSERT+=tableName+column+values;st.execute(SQL_INSERT);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
+
+    public static void delete(String tableName,int id){
+        Statement st = null;
+        String SQL_DELETE="delete from "+tableName+" where id="+id;
+        try {
+            st = connection.createStatement();
+            st.execute(SQL_DELETE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void update(String tableName,ArrayList<SqlMap> updateMap){
+        Statement st = null;
+        String SQL_UPDATE="update "+tableName+" set";
+        try {
+            st = connection.createStatement();
+            st.execute(SQL_UPDATE);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<SqlMap> select(String tableName,SqlMap require){
+        Statement st = null;
+        String SQL_SELECT="select * from "+tableName+" where "+require.getKey()+"="+require.getValues();
+        ArrayList<SqlMap> result=null;
+        try {
+            st = connection.createStatement();
+            st.execute(SQL_SELECT);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
