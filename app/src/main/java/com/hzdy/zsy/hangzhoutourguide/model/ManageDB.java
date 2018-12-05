@@ -1,4 +1,4 @@
-package com.hzdy.zsy.hangzhoutourguide;
+package com.hzdy.zsy.hangzhoutourguide.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ManageDB extends Thread{
-    public Connection connection = null;
+    public static Connection connection = null;
     private String driver = "com.mysql.jdbc.Driver";
     private String url = "jdbc:mysql://172.20.17.88:3306/tour";
     private String user = "root";
@@ -85,4 +85,14 @@ public class ManageDB extends Thread{
 
     }
 
+    public static void insert(){
+        try {
+            Statement st = connection.createStatement();
+            String SQL_INSERT="insert into"
+            st.execute()
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
