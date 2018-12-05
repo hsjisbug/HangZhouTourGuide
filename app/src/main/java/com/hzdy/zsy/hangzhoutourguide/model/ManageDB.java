@@ -88,8 +88,7 @@ public class ManageDB extends Thread{
     public static void insert(){
         try {
             Statement st = connection.createStatement();
-            String SQL_INSERT="insert into"
-            st.execute()
+            String SQL_INSERT="insert into";
         } catch (SQLException e) {
             e.printStackTrace();
         }
