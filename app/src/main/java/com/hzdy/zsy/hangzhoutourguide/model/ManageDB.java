@@ -1,19 +1,19 @@
 package com.hzdy.zsy.hangzhoutourguide.model;
 
-import android.util.Log;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ManageDB extends Thread{
     public static Connection connection = null;
-    private String driver = "com.mysql.jdbc.Driver";
-    private String url = "jdbc:mysql://172.20.10.2:3306/tour";
-    private String user = "root";
-    private String password = "000000";
+    private static String driver = "com.mysql.jdbc.Driver";
+    private static String url = "jdbc:mysql://172.20.17.88:3306/tour";
+    private static String user = "root";
+    private static String password = "000000";
 
     @Override
     public void run() {
@@ -21,11 +21,24 @@ public class ManageDB extends Thread{
             Class.forName(driver);
             connection = DriverManager.getConnection(url,user,password);
             createTable();
+            closeAll(connection,null);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Connection getConnection(){
+        try{
+            Class.forName(driver);
+            connection = DriverManager.getConnection(url,user,password);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return connection;
     }
 
     private void createTable(){
@@ -91,13 +104,14 @@ public class ManageDB extends Thread{
         String column="(";
         String values="(";
         String SQL_INSERT="insert into ";
-        Statement st=null;
+        PreparedStatement ps=null;
+        connection=getConnection();
         try {
-            st = connection.createStatement();
             for(int i=0;i<size;i++){
                 SqlMap key=insertMap.get(i);column+=key.getKey();
-                if(!(key.equals("age")||key.equals("user_id")||key.equals("belong_ss")||key.equals("release_time")||key.equals("position"))){
-                    values+="'"+key.getValues();
+                if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
+                        key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
+                    values+="'"+key.getValues()+"'";
                 }else {
                     values += key.getValues();
                 }
@@ -107,45 +121,95 @@ public class ManageDB extends Thread{
                     column+=") values";values+=");";
                 }
             }
-            SQL_INSERT+=tableName+column+values;st.execute(SQL_INSERT);
+            SQL_INSERT+=tableName+column+values;
+            ps = connection.prepareStatement(SQL_INSERT);
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeAll(connection,ps);
     }
 
     public static void delete(String tableName,int id){
-        Statement st = null;
+        connection=getConnection();
+        PreparedStatement ps = null;
         String SQL_DELETE="delete from "+tableName+" where id="+id;
         try {
-            st = connection.createStatement();
-            st.execute(SQL_DELETE);
+            ps = connection.prepareStatement(SQL_DELETE);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeAll(connection,ps);
     }
 
     public static void update(String tableName,ArrayList<SqlMap> updateMap){
-        Statement st = null;
-        String SQL_UPDATE="update "+tableName+" set";
+        PreparedStatement ps = null;
+        int size=updateMap.size();
+        String SQL_UPDATE="update "+tableName+" set ";
+        connection=getConnection();
         try {
-            st = connection.createStatement();
-            st.execute(SQL_UPDATE);
+            for(int i=0;i<size;i++){
+                SqlMap key=updateMap.get(i);
+                if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
+                        key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
+                    if (i < size - 1) {
+                        SQL_UPDATE += key.getKey() + "=";
+                        SQL_UPDATE += "'" + key.getValues() + "'";
+                    }
+                    else
+                        SQL_UPDATE+=" where " + key.getKey() + "='" + key.getValues() + "'";
+                } else {
+                    if (i < size - 1) {
+                        SQL_UPDATE += key.getKey() + "=";
+                        SQL_UPDATE += key.getValues() ;
+                    }
+                    else
+                        SQL_UPDATE+=" where " + key.getKey() + "=" + key.getValues();
+                }
+                if (i < size - 2)
+                    SQL_UPDATE += ",";
+            }
+            ps=connection.prepareStatement(SQL_UPDATE);
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeAll(connection,ps);
     }
 
-    public static ArrayList<SqlMap> select(String tableName,SqlMap require){
-        Statement st = null;
-        String SQL_SELECT="select * from "+tableName+" where "+require.getKey()+"="+require.getValues();
-        ArrayList<SqlMap> result=null;
+    public static ResultSet select(String tableName,String Sql){
+        PreparedStatement ps = null;
+        ResultSet rs=null;
         try {
-            st = connection.createStatement();
-            st.execute(SQL_SELECT);
+            ps = connection.prepareStatement(Sql);
+            if(ps!=null){
+                rs=ps.executeQuery();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+        closeAll(connection,ps);
+        return rs;
     }
 
+    /**
+     * 关闭数据库
+     * */
+
+    public static void closeAll(Connection conn, PreparedStatement ps){
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (ps != null) {
+            try {
+                ps.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

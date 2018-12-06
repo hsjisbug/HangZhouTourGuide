@@ -4,6 +4,11 @@ public class SqlMap {
     private String key;
     private String values;
 
+    public SqlMap(String key, String values) {
+        this.key = key;
+        this.values = values;
+    }
+
     public String getKey() {
         return key;
     }

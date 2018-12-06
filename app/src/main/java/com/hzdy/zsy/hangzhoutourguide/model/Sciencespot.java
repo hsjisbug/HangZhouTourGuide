@@ -5,6 +5,7 @@ import android.graphics.Point;
 import java.util.List;
 
 public class Sciencespot {
+    private int id;
     private String ss_name;
     private String address;
     private Point point;
@@ -17,6 +18,14 @@ public class Sciencespot {
     private List<Point> parking_lot;
     private List<Point> bus_stop;
     private List<Point> visitor_center;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSs_name() {
         return ss_name;
