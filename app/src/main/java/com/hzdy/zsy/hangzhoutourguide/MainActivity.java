@@ -4,12 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 
-import com.hzdy.zsy.hangzhoutourguide.model.ManageDB;
-
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 public class MainActivity extends Activity {
     private Button yu;
     private Button zhao;
@@ -22,7 +16,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new ManageDB().start();
 
         yu=findViewById(R.id.yuxin);
         zhao=findViewById(R.id.zhaoxuanwei);
@@ -31,21 +24,7 @@ public class MainActivity extends Activity {
         jin=findViewById(R.id.jinbojun);
         huang=findViewById(R.id.huangshengjin);
 
-        String Sql="select * from user;";//查找user表的所有数据
-        List list = null;
-        try {
-            list = ManageDB.select(Sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        for(int i=0;i<list.size();i++){
-            Map map= (Map) list.get(i);
-            System.out.println(map);
-        }
+
 
 //        yu.setOnClickListener(new View.OnClickListener() {
 //            @Override
