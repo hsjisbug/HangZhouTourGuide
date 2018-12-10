@@ -1,12 +1,18 @@
 package com.hzdy.zsy.hangzhoutourguide.model;
 
+import android.util.Log;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ManageDB extends Thread{
     public static Connection connection = null;
@@ -14,14 +20,16 @@ public class ManageDB extends Thread{
     private static String url = "jdbc:mysql://172.20.17.88:3306/tour";
     private static String user = "root";
     private static String password = "000000";
+    private static boolean tag=false;
 
     @Override
     public void run() {
-        try{
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url,user,password);
+        try {
+            connection = getConn();
             createTable();
-            closeAll(connection,null);
+            tag=true;
+            Log.i("TAG","run");
+            connection.close();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -29,19 +37,13 @@ public class ManageDB extends Thread{
         }
     }
 
-    public static Connection getConnection(){
-        try{
-            Class.forName(driver);
-            connection = DriverManager.getConnection(url,user,password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static Connection getConn() throws ClassNotFoundException, SQLException {
+        Class.forName(driver);
+        connection = DriverManager.getConnection(url,user,password);
         return connection;
     }
 
-    private void createTable(){
+    private void createTable() throws SQLException {
         String SQL_CREATE_USER = "create table if not exists user(" +
                 "id int(11) not null auto_increment," +
                 "username varchar(100) character set utf8 not null," +
@@ -88,128 +90,108 @@ public class ManageDB extends Thread{
                 "foreign key(belong_ss) references sciencespot(id));";
 
 
-        try {
-            Statement st = connection.createStatement();
-            st.execute(SQL_CREATE_USER);
-            st.execute(SQL_CREATE_COMMENT);
-            st.execute(SQL_CREATE_SCIENCE_SPOT);
-            st.execute(SQL_CREATE_ATTRACTIONS);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Statement st = connection.createStatement();
+        st.execute(SQL_CREATE_USER);
+        st.execute(SQL_CREATE_COMMENT);
+        st.execute(SQL_CREATE_SCIENCE_SPOT);
+        st.execute(SQL_CREATE_ATTRACTIONS);
+        //connection.close();
+        st.close();
     }
 
-    public static void insert(String tableName, ArrayList<SqlMap> insertMap){
+    public static void insert(String tableName, ArrayList<SqlMap> insertMap) throws SQLException, ClassNotFoundException {
         int size=insertMap.size();
         String column="(";
         String values="(";
         String SQL_INSERT="insert into ";
         PreparedStatement ps=null;
-        connection=getConnection();
-        try {
-            for(int i=0;i<size;i++){
-                SqlMap key=insertMap.get(i);column+=key.getKey();
-                if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
-                        key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
-                    values+="'"+key.getValues()+"'";
-                }else {
-                    values += key.getValues();
-                }
-                if(i<size-1){
-                    column+=",";values+=",";
-                }else{
-                    column+=") values";values+=");";
-                }
+        //connection=getConn();
+        for(int i=0;i<size;i++){
+            SqlMap key=insertMap.get(i);column+=key.getKey();
+            if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
+                    key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
+                values+="'"+key.getValues()+"'";
+            }else {
+                values += key.getValues();
             }
-            SQL_INSERT+=tableName+column+values;
-            ps = connection.prepareStatement(SQL_INSERT);
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if(i<size-1){
+                column+=",";values+=",";
+            }else{
+                column+=") values";values+=");";
+            }
         }
-        closeAll(connection,ps);
+        SQL_INSERT+=tableName+column+values;
+        ps = connection.prepareStatement(SQL_INSERT);
+        ps.execute();
     }
 
-    public static void delete(String tableName,int id){
-        connection=getConnection();
+    public static void delete(String Sql) throws SQLException, ClassNotFoundException {
+        connection=getConn();
         PreparedStatement ps = null;
-        String SQL_DELETE="delete from "+tableName+" where id="+id;
-        try {
-            ps = connection.prepareStatement(SQL_DELETE);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        closeAll(connection,ps);
+        ps = connection.prepareStatement(Sql);
     }
 
-    public static void update(String tableName,ArrayList<SqlMap> updateMap){
+    public static void update(String tableName,ArrayList<SqlMap> updateMap) throws SQLException, ClassNotFoundException {
         PreparedStatement ps = null;
         int size=updateMap.size();
         String SQL_UPDATE="update "+tableName+" set ";
-        connection=getConnection();
-        try {
-            for(int i=0;i<size;i++){
-                SqlMap key=updateMap.get(i);
-                if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
-                        key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
-                    if (i < size - 1) {
-                        SQL_UPDATE += key.getKey() + "=";
-                        SQL_UPDATE += "'" + key.getValues() + "'";
-                    }
-                    else
-                        SQL_UPDATE+=" where " + key.getKey() + "='" + key.getValues() + "'";
-                } else {
-                    if (i < size - 1) {
-                        SQL_UPDATE += key.getKey() + "=";
-                        SQL_UPDATE += key.getValues() ;
-                    }
-                    else
-                        SQL_UPDATE+=" where " + key.getKey() + "=" + key.getValues();
+        connection=getConn();
+        for(int i=0;i<size;i++){
+            SqlMap key=updateMap.get(i);
+            if(!(key.getKey().equals("age")||key.getKey().equals("user_id")||key.getKey().equals("belong_ss")||
+                    key.getKey().equals("release_time")||key.getKey().equals("position")||key.getKey().equals("id"))){
+                if (i < size - 1) {
+                    SQL_UPDATE += key.getKey() + "=";
+                    SQL_UPDATE += "'" + key.getValues() + "'";
                 }
-                if (i < size - 2)
-                    SQL_UPDATE += ",";
+                else
+                    SQL_UPDATE+=" where " + key.getKey() + "='" + key.getValues() + "'";
+            } else {
+                if (i < size - 1) {
+                    SQL_UPDATE += key.getKey() + "=";
+                    SQL_UPDATE += key.getValues() ;
+                }
+                else
+                    SQL_UPDATE+=" where " + key.getKey() + "=" + key.getValues();
             }
-            ps=connection.prepareStatement(SQL_UPDATE);
-            ps.execute();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (i < size - 2)
+                SQL_UPDATE += ",";
         }
-        closeAll(connection,ps);
+        ps=connection.prepareStatement(SQL_UPDATE);
+        ps.execute();
     }
 
-    public static ResultSet select(String tableName,String Sql){
+    public static List select(String Sql) throws SQLException, ClassNotFoundException, InterruptedException {
+        while(!tag){
+
+        }
+        Log.i("SEL","查找");
         PreparedStatement ps = null;
         ResultSet rs=null;
-        try {
-            ps = connection.prepareStatement(Sql);
-            if(ps!=null){
-                rs=ps.executeQuery();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        List list=null;
+        //connection=getConn();
+        ps = connection.prepareStatement(Sql);
+        Log.i("TAG", String.valueOf(ps));
+        if(ps!=null){
+            rs=ps.executeQuery();
+            list=convertList(rs);
         }
-        closeAll(connection,ps);
-        return rs;
+        //connection.close();
+        ps.close();
+        return list;
     }
 
-    /**
-     * 关闭数据库
-     * */
-
-    public static void closeAll(Connection conn, PreparedStatement ps){
-        if (conn != null) {
-            try {
-                conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    private static List convertList(ResultSet rs) throws SQLException{
+        List list = new ArrayList();
+        ResultSetMetaData md = rs.getMetaData();//获取键名
+        int columnCount = md.getColumnCount();//获取行的数量
+        while (rs.next()) {
+            Map rowData = new HashMap();//声明Map
+            for (int i = 1; i <= columnCount; i++) {
+                rowData.put(md.getColumnName(i), rs.getObject(i));//获取键名及值
             }
+            list.add(rowData);
         }
-        if (ps != null) {
-            try {
-                ps.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        return list;
     }
 }
