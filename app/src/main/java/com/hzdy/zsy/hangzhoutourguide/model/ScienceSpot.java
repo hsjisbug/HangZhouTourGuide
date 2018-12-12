@@ -4,7 +4,7 @@ import android.graphics.Point;
 
 import java.util.List;
 
-public class Sciencespot {
+public class ScienceSpot {
     private int id;
     private String ss_name;
     private String address;

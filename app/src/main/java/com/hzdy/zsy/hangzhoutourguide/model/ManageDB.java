@@ -17,10 +17,17 @@ import java.util.Map;
 public class ManageDB{
     public static Connection connection = null;
     private static String driver = "com.mysql.jdbc.Driver";
-    private static String url = "jdbc:mysql://172.20.17.88:3306/tour";
+    private static String url = "jdbc:mysql://172.20.10.2:3306/tour";
     private static String user = "root";
     private static String password = "000000";
 
+    static{
+        try {
+            Class.forName(driver);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     public static void initDatabase(){
         connection = getConn();
         createTable();
@@ -28,10 +35,8 @@ public class ManageDB{
 
     public static Connection getConn(){
         try {
-            Class.forName(driver);
+
             connection = DriverManager.getConnection(url,user,password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }

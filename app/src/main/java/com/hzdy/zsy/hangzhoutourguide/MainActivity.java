@@ -4,6 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
 
+import com.hzdy.zsy.hangzhoutourguide.model.ManageDB;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class MainActivity extends Activity {
     private Button yu;
     private Button zhao;
@@ -23,7 +29,6 @@ public class MainActivity extends Activity {
         ye=findViewById(R.id.yejiwei);
         jin=findViewById(R.id.jinbojun);
         huang=findViewById(R.id.huangshengjin);
-
 
 
 //        yu.setOnClickListener(new View.OnClickListener() {
