@@ -1,38 +1,46 @@
 package com.hzdy.zsy.hangzhoutourguide.model;
 
-import android.graphics.Point;
-
-import java.util.List;
+import java.util.ArrayList;
 
 public class ScienceSpot {
-    private int id;
-    private String ss_name;
+    private String cityName;
+    private String areaName;
+    private String summary;
     private String address;
-    private Point point;
-    private String ss_message;
-    private String ss_voice_introduce;
-    private List<Point> wc;
-    private String food;
-    private List<Point> in_and_out;
-    private List<Point> hotel;
-    private List<Point> parking_lot;
-    private List<Point> bus_stop;
-    private List<Point> visitor_center;
+    private String name;
+    private double lat;
+    private double lon;
+    private double price;
+    private String star;
+    private String content;
+    private ArrayList<String> picUrlList;
+    private ArrayList<String> picSmallList;
+    private String openTime;
+    private String coupon;
+    private String attention;
 
-    public int getId() {
-        return id;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
-    public String getSs_name() {
-        return ss_name;
+    public String getAreaName() {
+        return areaName;
     }
 
-    public void setSs_name(String ss_name) {
-        this.ss_name = ss_name;
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getAddress() {
@@ -43,83 +51,92 @@ public class ScienceSpot {
         this.address = address;
     }
 
-    public Point getPoint() {
-        return point;
+    public String getName() {
+        return name;
     }
 
-    public void setPoint(Point point) {
-        this.point = point;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getSs_message() {
-        return ss_message;
+    public double getLat() {
+        return lat;
     }
 
-    public void setSs_message(String ss_message) {
-        this.ss_message = ss_message;
+    public void setLat(double lat) {
+        this.lat = lat;
     }
 
-    public String getSs_voice_introduce() {
-        return ss_voice_introduce;
+    public double getLon() {
+        return lon;
     }
 
-    public void setSs_voice_introduce(String ss_voice_introduce) {
-        this.ss_voice_introduce = ss_voice_introduce;
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
-    public List<Point> getWc() {
-        return wc;
+    public double getPrice() {
+        return price;
     }
 
-    public void setWc(List<Point> wc) {
-        this.wc = wc;
+    public void setPrice(double price) {
+        this.price = price;
     }
 
-    public String getFood() {
-        return food;
+    public String getStar() {
+        return star;
     }
 
-    public void setFood(String food) {
-        this.food = food;
+    public void setStar(String star) {
+        this.star = star;
     }
 
-    public List<Point> getIn_and_out() {
-        return in_and_out;
+    public String getContent() {
+        return content;
     }
 
-    public void setIn_and_out(List<Point> in_and_out) {
-        this.in_and_out = in_and_out;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public List<Point> getHotel() {
-        return hotel;
+    public ArrayList<String> getPicUrlList() {
+        return picUrlList;
     }
 
-    public void setHotel(List<Point> hotel) {
-        this.hotel = hotel;
+    public void setPicUrlList(ArrayList<String> picUrlList) {
+        this.picUrlList = picUrlList;
     }
 
-    public List<Point> getParking_lot() {
-        return parking_lot;
+    public ArrayList<String> getPicSmallList() {
+        return picSmallList;
     }
 
-    public void setParking_lot(List<Point> parking_lot) {
-        this.parking_lot = parking_lot;
+    public void setPicSmallList(ArrayList<String> picSmallList) {
+        this.picSmallList = picSmallList;
     }
 
-    public List<Point> getBus_stop() {
-        return bus_stop;
+    public String getOpenTime() {
+        return openTime;
     }
 
-    public void setBus_stop(List<Point> bus_stop) {
-        this.bus_stop = bus_stop;
+    public void setOpenTime(String openTime) {
+        this.openTime = openTime;
     }
 
-    public List<Point> getVisitor_center() {
-        return visitor_center;
+    public String getCoupon() {
+        return coupon;
     }
 
-    public void setVisitor_center(List<Point> visitor_center) {
-        this.visitor_center = visitor_center;
+    public void setCoupon(String coupon) {
+        this.coupon = coupon;
     }
+
+    public String getAttention() {
+        return attention;
+    }
+
+    public void setAttention(String attention) {
+        this.attention = attention;
+    }
+
 }

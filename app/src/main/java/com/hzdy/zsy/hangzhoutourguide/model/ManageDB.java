@@ -17,9 +17,9 @@ import java.util.Map;
 public class ManageDB{
     public static Connection connection = null;
     private static String driver = "com.mysql.jdbc.Driver";
-    private static String url = "jdbc:mysql://172.20.10.2:3306/tour";
+    private static String url = "jdbc:mysql://212.64.1.6:3306/tour";
     private static String user = "root";
-    private static String password = "000000";
+    private static String password = "(HSJ123456hsj)";
 
     static{
         try {

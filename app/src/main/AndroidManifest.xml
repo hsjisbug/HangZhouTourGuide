@@ -26,7 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".WeatherActivity"></activity>
+        <activity android:name=".BaiduMapActivity"></activity>
+        <activity android:name=".ChooseActivity"></activity>
+        <activity android:name=".ScienceSpotActivity"></activity>
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"/>
         <meta-data android:name="com.baidu.lbsapi.API_KEY"
             android:value="B6D7UURwgFf9RRrerNcWyNnMG1qyGvTX"/>
     </application>

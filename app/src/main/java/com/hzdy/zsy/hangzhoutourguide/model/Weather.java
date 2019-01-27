@@ -1,4 +1,4 @@
-package com.hzdy.zsy.hangzhoutourguide.controller;
+package com.hzdy.zsy.hangzhoutourguide.model;
 
 public class Weather {
     private String weather;

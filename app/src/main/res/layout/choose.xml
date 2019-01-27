@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/ll"
+    android:layout_alignParentBottom="true"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/jd"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="AAAA"/>
+
+    <TextView
+        android:id="@+id/wd"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+    <Button
+        android:id="@+id/zhuan"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="百度地图" />
+    <Button
+        android:id="@+id/weather_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="天气" />
+    <Button
+        android:id="@+id/science_spot_button"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="景区" />
+
+</LinearLayout>
